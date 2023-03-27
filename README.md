@@ -1,6 +1,18 @@
 # UniHome Suburb Selector
 
-Final Year Project for university
+> A smart data driven suburb recommendation system for Melbourne catered towards students built as part of a final year project for university. 
+
+###### Tech Stack
+- NodeJS
+- React
+- Typescript
+- Express
+- Knex
+- Postgres
+- Playwright
+- Jest
+- MaterialUI
+- Tableau
 
 `server` contains code for the Express backend
 

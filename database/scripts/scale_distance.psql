@@ -1,0 +1,34 @@
+-- This script scales the distance score in the DISTANCE_SUBURB_UNI table
+
+DO $$
+DECLARE
+
+    -- set a max tolerable commute distance
+    -- distances greater than threshold will get a 0 score
+    max_tolerable_commute_distance NUMERIC(5,2) := 55;
+
+BEGIN
+    UPDATE "DISTANCE_SUBURB_UNI" SET distance_score = 0;
+    UPDATE "DISTANCE_SUBURB_UNI" SET distance_score = 0 WHERE distance_in_km > max_tolerable_commute_distance;
+
+--     SELECT MIN(distance_in_km) INTO min_commute_distance FROM "DISTANCE_SUBURB_UNI" WHERE ;
+
+    -- normalize from 0 to 100
+    UPDATE "DISTANCE_SUBURB_UNI" SET distance_score = 
+    100 - (
+        (
+        (distance_in_km - 
+        (SELECT MIN(distance_in_km) FROM 
+    "DISTANCE_SUBURB_UNI" WHERE 
+    "DISTANCE_SUBURB_UNI".uni_code = uni_code)
+    ) / 
+        (
+        (max_tolerable_commute_distance) - 
+        (SELECT MIN(distance_in_km) FROM 
+    "DISTANCE_SUBURB_UNI" WHERE 
+    "DISTANCE_SUBURB_UNI".uni_code = uni_code))
+) * 100 
+    )
+    WHERE distance_in_km < max_tolerable_commute_distance;
+
+END  $$;
